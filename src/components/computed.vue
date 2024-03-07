@@ -4,17 +4,9 @@
             <a-form v-bind="formItemLayout" :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
                 <a-row :gutter="24" :wrap="true">
                     <a-col :xs="10" :sm="10" :md="10" :lg="8" :xl="10">
-                        <a-form-item label="性别">
-                            <a-radio-group v-model:value="formState.userInfo.sexVal" button-style="solid">
-                                <a-radio-button v-for="item, index in sex" :key="index" :value="item">{{ item
-                                }}</a-radio-button>
-                            </a-radio-group>
-                        </a-form-item>
-                    </a-col>
-                    <a-col :xs="10" :sm="10" :md="10" :lg="8" :xl="10">
                         <a-form-item label="体重">
-                            <a-input-number id="inputNumber" v-model:value="formState.userInfo.weight" :min="0" :max="300"
-                                addon-after="kg" />
+                            <a-input-number id="inputNumber" v-model:value="formState.userInfo.weight" :min="0"
+                                :max="300" addon-after="kg" />
                         </a-form-item>
                     </a-col>
                     <a-col :xs="10" :sm="10" :md="12" :lg="8" :xl="10">
@@ -28,31 +20,31 @@
                 </a-row>
 
                 <a-form-item label="训练消耗比例" :extra="`女生按5计算,男生按8和10计算(训练组数比较单一的按8来算,训练组数很多,比如超级组、递减组按10来算)`">
-                            <a-radio-group v-model:value="formState.userInfo.trType" button-style="solid">
-                                <a-radio-button v-for="item, index in nums" :key="index" :value="item">{{ item
-                                }}</a-radio-button>
-                            </a-radio-group>
-                        </a-form-item>
+                    <a-radio-group v-model:value="formState.userInfo.trType" button-style="solid">
+                        <a-radio-button v-for="item, index in nums" :key="index" :value="item">{{ item
+                            }}</a-radio-button>
+                    </a-radio-group>
+                </a-form-item>
                 <a-form-item label="热量配比" extra="碳水:蛋白质:脂肪">
                     <a-radio-group v-model:value="heatVal" button-style="solid">
                         <a-radio-button v-for="item, index in heatD" :key="index" :value="item.type">{{ item.label
-                        }}</a-radio-button>
+                            }}</a-radio-button>
                     </a-radio-group>
 
                 </a-form-item>
                 <a-form-item label="消耗数据(大卡)">
                     <a-descriptions layout="vertical" bordered :column="3" size="small">
                         <a-descriptions-item label="基础代谢">{{ setZero(metabolism) }}</a-descriptions-item>
-                        <a-descriptions-item label="训练消耗">{{ setZero(te) }}</a-descriptions-item>
-                        <a-descriptions-item label="总消耗">{{ setZero(tes) }}</a-descriptions-item>
+                        <a-descriptions-item label="训练时长消耗">{{ setZero(te) }}</a-descriptions-item>
+                        <!-- <a-descriptions-item label="总消耗">{{ setZero(tes) }}</a-descriptions-item> -->
                         <a-descriptions-item label="减脂消耗">{{ setZero(flc) }}</a-descriptions-item>
                         <a-descriptions-item label="增肌消耗">{{ setZero(mw) }}</a-descriptions-item>
                         <a-descriptions-item label="增肌增重消耗">{{ setZero(gmgw) }}</a-descriptions-item>
 
                     </a-descriptions>
                 </a-form-item>
-                    <a-form-item label="热量配比(g)">
-                    <a-descriptions label="热量配比" layout="vertical" bordered size="small">
+                <a-form-item label="热量配比(g)">
+                    <a-descriptions label="热量配比" layout="vertical" bordered :column="3" size="small">
                         <a-descriptions-item label="碳水">{{ setZero(hotNum.tsVal) }}</a-descriptions-item>
                         <a-descriptions-item label="蛋白质">{{ setZero(hotNum.dbzVal) }}</a-descriptions-item>
                         <a-descriptions-item label="脂肪">{{ setZero(hotNum.zfVal) }}</a-descriptions-item>
@@ -72,11 +64,11 @@ const heatD = [
     { type: 1, data: { ts: 4, dbz: 2, zf: 4 }, label: '4:2:4' }, { type: 2, data: { ts: 5, dbz: 2, zf: 3 }, label: '5:2:3' }
 ]
 const heatVal = ref(2)
-const labelCol ={ style: { width: '150px' } }
+const labelCol = { style: { width: '150px' } }
 const formState = reactive({
     userInfo: {
         sexVal: '男',
-        weight: 0,
+        weight: '',
         metabolism: 0,//基础代谢
         trainingDuration: 1,//训练时长
         trType: 8
@@ -84,7 +76,7 @@ const formState = reactive({
 })
 // 基础代谢
 let metabolism = computed(() => {
-    return formState.userInfo.trainingDuration * 20
+    return formState.userInfo.weight * 20
 })
 // 训练消耗
 let te = computed(() => {
@@ -96,16 +88,16 @@ let tes = computed(() => {
 })
 // 减脂消耗
 let flc = computed(() => {
-    return te.value - 100
+    return tes.value - 100
 })
 // 增肌消耗
 let mw = computed(() => {
-    return te.value + 300
+    return tes.value + 300
 })
 
 // 增肌增重消耗
 let gmgw = computed(() => {
-    return te.value + 500
+    return tes.value + 500
 })
 
 let hotNum = computed(() => {
